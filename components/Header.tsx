@@ -4,7 +4,7 @@ import Logo from './Logo'
 
 const Header = () => {
   return (
-    <View style={{padding: 16, backgroundColor: 'white', borderBlockColor: 'whitesmoke', borderBottomWidth: 1, marginBottom: 10}}>
+    <View style={{paddingVertical: 10, paddingHorizontal: 20, backgroundColor: 'white', borderBlockColor: 'whitesmoke', borderBottomWidth: 1, marginBottom: 10}}>
       <Logo />
     </View>
   )

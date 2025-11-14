@@ -16,6 +16,7 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import baseUrl from "@/utils/baseUrl";
 import Modal from "react-native-modal";
 import NewTransaction from "@/components/NewTransaction";
+import TransactionItem from "@/components/TransactionItem";
 
 export default function Home() {
   const { session, signOut, isLoading, user } = useSession();
@@ -30,7 +31,7 @@ export default function Home() {
   const [loading, setLoading] = React.useState(false);
   const [data, setData] = React.useState<any | null>(null);
 
-  const fetchDashboard = React.useCallback(async () => {
+  const fetchDashboard = async () => {
     setLoading(true);
     try {
       const { res, data } = await authJson(`${baseUrl}/dashboard`, {
@@ -47,11 +48,11 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
-  }, [signOut]);
+  };
 
   React.useEffect(() => {
     if (session) fetchDashboard();
-  }, [session, fetchDashboard]);
+  }, []);
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -211,39 +212,13 @@ export default function Home() {
               <ActivityIndicator />
             ) : data?.recentTransactions?.length ? (
               <FlatList
-                style={{ maxHeight: 300 }}
+                style={{ height: 220 }}
                 data={data.recentTransactions}
+                scrollEnabled
+                showsVerticalScrollIndicator={false}
                 keyExtractor={(item: any) => item._id}
                 renderItem={({ item }) => (
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      paddingVertical: 12,
-                      borderBottomWidth: 1,
-                      borderBottomColor: "#f0f0f0",
-                    }}
-                  >
-                    <View>
-                      <Text style={{ fontWeight: "700" }}>
-                        {item.description ?? "Untitled"}
-                      </Text>
-                      <Text style={{ color: "#666", marginTop: 4 }}>
-                        {formatDate(item.date)}
-                      </Text>
-                    </View>
-                    <Text
-                      style={{
-                        fontWeight: "700",
-                        color:
-                          item.type?.toLowerCase() === "income"
-                            ? "green"
-                            : "red",
-                      }}
-                    >
-                      {formatCurrency(item.amount)}
-                    </Text>
-                  </View>
+                 <TransactionItem data={item}/>
                 )}
               />
             ) : (
@@ -256,8 +231,8 @@ export default function Home() {
       <Modal isVisible={isModalVisible}>
         <View style={{ flex: 1, backgroundColor: "white", padding: 20 }}>
           <Text style={{textAlign: "center", fontWeight: "bold", fontSize: 20, marginBottom: 20}}>Add New Transaction!</Text>
-            <NewTransaction closeModal={()=>setModalVisible(false)} />
-          <Button title="Hide modal" onPress={toggleModal} />
+            <NewTransaction closeModal={()=>setModalVisible(false)} fetchDashboard={()=>fetchDashboard()} />
+          {/* <Button title="Hide modal" onPress={toggleModal} /> */}
         </View>
       </Modal>
     </View>
