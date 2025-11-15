@@ -56,7 +56,7 @@ const TransactionItem = ({ data }: any) => {
       <Text
         style={{
           fontWeight: "700",
-          color: data?.type?.toLowerCase() === "income" ? "green" : "red",
+          color: data?.type?.toLowerCase() === "income" ? "seagreen" : "orange",
         }}
       >
         {formatCurrency(data?.amount)}
